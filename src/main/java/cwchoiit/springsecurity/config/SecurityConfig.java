@@ -30,11 +30,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // CSRF protection disabled
                 .rememberMe(configurer -> configurer.key("rememberMe").tokenValiditySeconds(86400)) // 1 day
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/login", "/user/signup").permitAll()
                         .requestMatchers("/note").hasRole("USER")
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/notice").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/notice").hasRole("ADMIN")
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // H2-Console iframe 정상 작동 (Origin 비교 후 같으면 그 iframe 요청은 허용)
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
