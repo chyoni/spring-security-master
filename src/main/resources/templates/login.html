@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <link rel="stylesheet" type="text/css" href="css/signin.css">
+    <link rel="stylesheet" type="text/css" href="/css/signin.css">
     <head th:insert=(~{fragments.html::header})></head>
 </head>
 <body>
 <header th:insert="(~{fragments.html::nav})"></header>
 <div class="container">
-    <form class="form-signin" method="post" th:action="@{/login}">
+    <form class="form-signin" method="POST">
         <h2 class="form-signin-heading">로그인</h2>
         <p>
             <label for="username" class="sr-only">Username</label>

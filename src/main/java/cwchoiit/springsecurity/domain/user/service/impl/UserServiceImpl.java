@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static cwchoiit.springsecurity.domain.user.entity.User.Role.ROLE_ADMIN;
+import static cwchoiit.springsecurity.domain.user.entity.User.Role.ROLE_USER;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -24,7 +27,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userRepository.findByUsername(userRegisterDTO.getUsername()).isPresent()) {
             throw new AlreadyRegisterUserException("User already exists");
         }
-        User newUser = new User(userRegisterDTO.getUsername(), passwordEncoder.encode(userRegisterDTO.getPassword()), "ROLE_USER");
+        User newUser = new User(userRegisterDTO.getUsername(), passwordEncoder.encode(userRegisterDTO.getPassword()), ROLE_USER);
         userRepository.save(newUser);
     }
 
@@ -33,7 +36,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userRepository.findByUsername(userRegisterDTO.getUsername()).isPresent()) {
             throw new AlreadyRegisterUserException("User already exists");
         }
-        User newAdmin = new User(userRegisterDTO.getUsername(), passwordEncoder.encode(userRegisterDTO.getPassword()), "ROLE_ADMIN");
+        User newAdmin = new User(userRegisterDTO.getUsername(), passwordEncoder.encode(userRegisterDTO.getPassword()), ROLE_ADMIN);
         return userRepository.save(newAdmin);
     }
 
@@ -43,6 +46,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (findUser == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return new org.springframework.security.core.userdetails.User(findUser.getUsername(), findUser.getPassword(), findUser.getAuthorities());
+        return new User(findUser.getUsername(), findUser.getPassword(), findUser.getRole());
     }
 }

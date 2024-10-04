@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString
 public class UserRegisterDTO {
 
     private String username;
