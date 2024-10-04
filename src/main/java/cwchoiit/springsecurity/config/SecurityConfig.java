@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,7 +22,7 @@ public class SecurityConfig {
         http
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic authentication disabled
                 .csrf(AbstractHttpConfigurer::disable) // CSRF protection disabled
-                .rememberMe(configurer -> configurer.key("rememberMe").tokenValiditySeconds(86400)) // 1 day
+                .rememberMe(configurer -> configurer.tokenValiditySeconds(86400)) // 1 day
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/home", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/login", "/user/signup").permitAll()
                         .requestMatchers("/note").hasRole("USER")
