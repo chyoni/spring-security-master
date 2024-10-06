@@ -1,5 +1,6 @@
 package cwchoiit.springsecurity.config;
 
+import cwchoiit.springsecurity.filter.StopWatchFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -19,6 +21,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(new StopWatchFilter(), WebAsyncManagerIntegrationFilter.class)
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic authentication disabled
                 .csrf(AbstractHttpConfigurer::disable) // CSRF protection disabled
                 .rememberMe(configurer -> configurer.tokenValiditySeconds(86400)) // 1 day
