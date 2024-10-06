@@ -3,6 +3,7 @@ package cwchoiit.springsecurity.domain.user.service.impl;
 import cwchoiit.springsecurity.domain.user.dto.UserRegisterDTO;
 import cwchoiit.springsecurity.domain.user.entity.User;
 import cwchoiit.springsecurity.domain.user.exception.AlreadyRegisterUserException;
+import cwchoiit.springsecurity.domain.user.exception.UserNotFoundException;
 import cwchoiit.springsecurity.domain.user.repository.UserRepository;
 import cwchoiit.springsecurity.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static cwchoiit.springsecurity.domain.user.entity.User.Role.ROLE_ADMIN;
 import static cwchoiit.springsecurity.domain.user.entity.User.Role.ROLE_USER;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -23,12 +26,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void signup(UserRegisterDTO userRegisterDTO) {
+    public User signup(UserRegisterDTO userRegisterDTO) {
         if (userRepository.findByUsername(userRegisterDTO.getUsername()).isPresent()) {
             throw new AlreadyRegisterUserException("User already exists");
         }
         User newUser = new User(userRegisterDTO.getUsername(), passwordEncoder.encode(userRegisterDTO.getPassword()), ROLE_USER);
-        userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     @Override
@@ -38,6 +41,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         User newAdmin = new User(userRegisterDTO.getUsername(), passwordEncoder.encode(userRegisterDTO.getPassword()), ROLE_ADMIN);
         return userRepository.save(newAdmin);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
