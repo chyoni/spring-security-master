@@ -1,10 +1,8 @@
 package cwchoiit.springsecurity.domain.user.entity;
 
+import cwchoiit.springsecurity.domain.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,7 +14,8 @@ import java.util.Collection;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User implements UserDetails {
+@ToString
+public class User extends BaseEntity implements UserDetails {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
