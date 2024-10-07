@@ -12,11 +12,12 @@ public abstract class JwtKey {
 
     /**
      * Key-Rolling 을 위한 Key set, 외부로 절대 유출되어서는 안된다.
+     * 같은 패키지 내 JwtProperties 인터페이스를 만들고 gitignore 설정한다.
      */
     private static final Map<String, String> SECRET_KEY_SET = Map.of(
-            "key1", "SpringSecurityJWTPracticeProjectIsSoGoodAndThisProjectIsSoFunSpringSecurityJWTPracticeProjectIsSoGoodAndThisProjectIsSoFun",
-            "key2", "GoodSpringSecurityNiceSpringSecurityGoodSpringSecurityNiceSpringSecurityGoodSpringSecurityNiceSpringSecurityGoodSpringSecurityNiceSpringSecurity",
-            "key3", "HelloSpringSecurityHelloSpringSecurityHelloSpringSecurityHelloSpringSecurityHelloSpringSecurityHelloSpringSecurityHelloSpringSecurityHelloSpringSecurity"
+            "key1", JwtProperties.SECRET_KEY_1,
+            "key2", JwtProperties.SECRET_KEY_2,
+            "key3", JwtProperties.SECRET_KEY_3
     );
     /**
      * KID_SET = ["key1", "key2", "key3"] 이 된다.
@@ -27,7 +28,7 @@ public abstract class JwtKey {
     private static final String[] KID_SET = SECRET_KEY_SET.keySet().toArray(new String[0]);
 
     private JwtKey() {
-        throw new UnsupportedOperationException("This class is non-instantiable");
+        throw new UnsupportedOperationException("This class cannot be instantiated");
     }
 
     public static Pair<String, Key> getRandomKey() {
