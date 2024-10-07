@@ -8,10 +8,6 @@ import java.security.Key;
 
 public class SigningKeyResolver extends SigningKeyResolverAdapter {
 
-    private SigningKeyResolver() {
-        throw new UnsupportedOperationException("This class cannot be instantiated");
-    }
-
     public static SigningKeyResolver instance = new SigningKeyResolver();
 
     @Override
