@@ -36,4 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-!**/src/main/**/application.yaml
+src/main/java/cwchoiit/springsecurity/jwt/JwtProperties.java
+src/main/resources/application.yaml
