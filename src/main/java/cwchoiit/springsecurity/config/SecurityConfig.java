@@ -1,15 +1,23 @@
 package cwchoiit.springsecurity.config;
 
+import cwchoiit.springsecurity.domain.user.repository.UserRepository;
 import cwchoiit.springsecurity.filter.StopWatchFilter;
+import cwchoiit.springsecurity.jwt.JwtAuthenticationFilter;
+import cwchoiit.springsecurity.jwt.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -18,13 +26,24 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final UserRepository userRepository;
+    private final AuthenticationConfiguration configuration;
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .addFilterBefore(new StopWatchFilter(), WebAsyncManagerIntegrationFilter.class)
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class) // 기존 Username, Password 를 Form 으로 받아 인증하는 방식의 Filter 를 JwtAuthenticationFilter 로 변경
+                .addFilterAt(new JwtAuthorizationFilter(userRepository), AuthorizationFilter.class) // 기존의 인가를 처리하는 필터를 JWT 로 인가하는 방식의 JwtAuthorizationFilter 로 변경
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic authentication disabled
                 .csrf(AbstractHttpConfigurer::disable) // CSRF protection disabled
-                .rememberMe(configurer -> configurer.tokenValiditySeconds(86400)) // 1 day
+                .rememberMe(AbstractHttpConfigurer::disable) // RememberMe authentication disabled
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // session authentication disabled
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/home", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/login", "/user/signup").permitAll()
                         .requestMatchers("/note").hasRole("USER")

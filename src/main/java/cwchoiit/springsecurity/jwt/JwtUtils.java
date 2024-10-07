@@ -9,10 +9,9 @@ import org.springframework.data.util.Pair;
 import java.security.Key;
 import java.util.Date;
 
-public abstract class JwtUtils {
+import static cwchoiit.springsecurity.jwt.JwtProperties.EXPIRATION_TIME;
 
-    public static final int EXPIRATION_TIME = 600000; // 10분
-    public static final String COOKIE_NAME = "JWT-AUTHENTICATION";
+public abstract class JwtUtils {
 
     private JwtUtils() {
         throw new UnsupportedOperationException("This class cannot be instantiated");
@@ -34,7 +33,7 @@ public abstract class JwtUtils {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + EXPIRATION_TIME))
+                .setExpiration(new Date(now.getTime() + EXPIRATION_TIME)) // JwtProperties 파일에 있는 상수값 (gitignore)
                 .setHeaderParam(JwsHeader.KEY_ID, key.getFirst())
                 .signWith(key.getSecond())
                 .compact();
