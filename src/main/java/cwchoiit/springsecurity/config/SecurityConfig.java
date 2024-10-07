@@ -40,8 +40,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .addFilterBefore(new StopWatchFilter(), WebAsyncManagerIntegrationFilter.class)
-                .addFilterAt(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class) // 기존 Username, Password 를 Form 으로 받아 인증하는 방식의 Filter 를 JwtAuthenticationFilter 로 변경
-                .addFilterAt(new JwtAuthorizationFilter(userRepository), AuthorizationFilter.class) // 기존의 인가를 처리하는 필터를 JWT 로 인가하는 방식의 JwtAuthorizationFilter 로 변경
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class) // 기존 Username, Password 를 Form 으로 받아 인증하는 방식의 스프링 시큐리티의 필터를 JwtAuthenticationFilter 로 변경
+                .addFilterAt(new JwtAuthorizationFilter(userRepository), AuthorizationFilter.class) // 기존의 인가를 처리하는 스프링 시큐리티의 필터를 JWT 로 인가하는 방식의 JwtAuthorizationFilter 로 변경
                 .addFilterAt(new JwtLogoutFilter(), LogoutFilter.class) // 기존의 로그아웃 처리를 하는 스프링 시큐리티의 필터를 직접 만든 JwtLogoutFilter 로 변경
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic authentication disabled
                 .csrf(AbstractHttpConfigurer::disable) // CSRF protection disabled
