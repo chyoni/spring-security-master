@@ -38,3 +38,5 @@ out/
 
 src/main/java/cwchoiit/springsecurity/jwt/JwtProperties.java
 src/main/resources/application.yaml
+
+.DS_Store
